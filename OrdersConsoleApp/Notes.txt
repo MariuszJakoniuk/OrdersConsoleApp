@@ -1,0 +1,15 @@
+﻿2 typy zamówień od klienta i do dostawcy
+
+Menu "menu"
+0. lista zamówień (w liscie mozliwość również 1, 2,3,4)
+1. nowe zamówienie
+2. Szczegóły zamówienia
+3. Realizacja zamówienia
+4. Usuwanie zamówienia
+
+0.1 wyświetlić zamówienia filtrem po grupie
+1.1 wybór typu zamówienia chyba że wchodzimy z "0" to nie
+1.1 wprowadzenie danych
+2.1 Wyświetlenie po id
+3.1 Zmiana statusu (Nowe, W trakcie, Zrealizowane)
+
