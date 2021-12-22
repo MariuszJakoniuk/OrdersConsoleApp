@@ -20,7 +20,7 @@ namespace OrdersConsoleApp
         {
             statusOrderService.AddNewStatusOrders(1, "Nowe");
             statusOrderService.AddNewStatusOrders(2, "W realizacji");
-            statusOrderService.AddNewStatusOrders(2, "Zrealizowane");
+            statusOrderService.AddNewStatusOrders(3, "Zrealizowane");
 
             return statusOrderService;
         }

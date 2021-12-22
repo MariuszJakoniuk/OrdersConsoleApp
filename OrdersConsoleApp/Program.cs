@@ -37,11 +37,11 @@ do
             break;
         case 2:
             int idDetails = Validation.GiveMeInt("Podaj numer zamówienia: ");
-            orderService.ShowOrder(idDetails);
+            int countDetalis = orderService.ShowOrder(idDetails);
             break;
         case 3:
             int idChange = Validation.GiveMeInt("Podaj numer zamówienia: ");
-            orderService.OrderStatusChange(idChange);
+            int countChange = orderService.OrderStatusChange(idChange);
             break;
         case 4:
             Console.WriteLine($"Wybór: {operation}");

@@ -57,7 +57,7 @@ public class OrderService
         return order.Id;
     }
 
-    private void ShowOdrerItem(Order order, List<TypeOrder> typeOrder, List<StatusOrder> statusOrder)
+    private void ShowOdrerDetails(Order order, List<TypeOrder> typeOrder, List<StatusOrder> statusOrder)
     {
         Console.Write("|");
         Console.Write(("   " + order.Id).Substring(("   " + order.Id).Length - 3, 3));
@@ -95,7 +95,7 @@ public class OrderService
         }
         Console.WriteLine("|");
     }
-    public void ShowOrder()
+    public int ShowOrder()
     {
         TypeOrderService typeOrderService = new TypeOrderService();
         typeOrderService.Initialize(typeOrderService);
@@ -105,24 +105,25 @@ public class OrderService
         statusOrderService.Initialize(statusOrderService);
         var statusOrder = statusOrderService.GetAllStatus();
 
-        bool isPosition = false;
+        int count = 0;
 
         ShowOrdersTop();
 
         foreach (var order in Orders)
         {
-            ShowOdrerItem(order, typeOrder, statusOrder);
-            isPosition = true;
+            ShowOdrerDetails(order, typeOrder, statusOrder);
+            count++;
             ShowOrderLine();
         }
-        if (!isPosition)
+        if (count == 0)
         {
             Console.WriteLine("Brak zamówień");
         }
         Console.ReadLine();
         //Todo: menu robienia
+        return count;
     }
-    public void ShowOrder(int id)
+    public int ShowOrder(int id)
     {
         TypeOrderService typeOrderService = new TypeOrderService();
         typeOrderService.Initialize(typeOrderService);
@@ -132,7 +133,7 @@ public class OrderService
         statusOrderService.Initialize(statusOrderService);
         var statusOrder = statusOrderService.GetAllStatus();
 
-        bool isPosition = false;
+        int count = 0;
 
         ShowOrdersTop();
 
@@ -141,17 +142,16 @@ public class OrderService
 
             if (order.Id == id)
             {
-                ShowOdrerItem(order, typeOrder, statusOrder);
-                isPosition = true;
+                ShowOdrerDetails(order, typeOrder, statusOrder);
+                count++;
                 ShowOrderLine();
             }
-            if (!isPosition)
-            {
-                Console.WriteLine("Brak zamówień zgodnych ze specyfikacją");
-            }
         }
-        Console.ReadKey();
-        //Tu coś czy nic, może modyfikacja
+        if (count == 0)
+        {
+            Console.WriteLine("Brak zamówień zgodnych ze specyfikacją");
+        }
+        return count;
     }
     private void ShowOrdersTop()
     {
@@ -166,25 +166,57 @@ public class OrderService
         Console.WriteLine("+---+--------+-----------------------------+----------+------------+----------+");
     }
 
-    internal void OrderStatusChange(int idChange)
+    public int OrderStatusChange(int idChange)
     {
-        ShowOrder(idChange);
+        int toChange = ShowOrder(idChange);
         Console.WriteLine();
 
-        Console.WriteLine("Status zamówienia: ");
-        StatusOrderService statusOrderService = new StatusOrderService();
-        statusOrderService.Initialize(statusOrderService);
-        var statusAdd = statusOrderService.GetAllStatus();
-        var operationAccepted = new byte[statusAdd.Count];
-        for (int i = 0; i < statusAdd.Count; i++)
+        int count = 0;
+
+        if (toChange != 0)
         {
-            Console.WriteLine($"{statusAdd[i].Id}. {statusAdd[i].Name}");
-            operationAccepted[i] = (byte)statusAdd[i].Id;
+            Console.WriteLine("Status zamówienia: ");
+            StatusOrderService statusOrderService = new StatusOrderService();
+            statusOrderService.Initialize(statusOrderService);
+            var status = statusOrderService.GetAllStatus();
+            var operationAccepted = new byte[status.Count];
+            for (int i = 0; i < status.Count; i++)
+            {
+                Console.WriteLine($"{status[i].Id}. {status[i].Name}");
+                operationAccepted[i] = (byte)status[i].Id;
+            }
+            byte statusNew = Validation.GiveMeByte("Dokonaj wyboru: ", operationAccepted);
+
+            //Rozwiązanie 1 - nie działa
+            foreach (var item in Orders)
+            {
+                if (item.Id == idChange)
+                {
+                    item.StatusId = statusNew;
+                }
+            }
+
+            //Rozwiązanie 2 - nie działa
+            //Orders.Single(o => o.Id == idChange).StatusId = statusNew;
+
+            //Rozwiązanie 3 - nie działa
+            //Order obj = Orders.FirstOrDefault(x => x.Id == idChange);
+            //if (obj != null)
+            //{
+            //    obj.StatusId = statusNew;
+            //}
+
+            //rozwiązanie 4 - nie działa
+            //Orders.Where(x => x.Id == idChange).Select(o => { o.StatusId = statusNew; return o; }).ToList();
+
+            ShowOrder(idChange);
         }
-        byte operation = Validation.GiveMeByte("Dokonaj wyboru: ", operationAccepted);
-
-
-        throw new NotImplementedException();
+        else
+        {
+            Console.WriteLine($"Podany id {idChange} zamówienia nie istnieje");
+        }
+        Console.ReadKey();
+        return count;
     }
 
 }
