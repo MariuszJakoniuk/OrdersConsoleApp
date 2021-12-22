@@ -9,9 +9,8 @@ bool appExit = false;
 
 MenuActionService actionService = new MenuActionService();
 OrderService orderService = new OrderService();
-//actionService = 
 
-MenuActionService.Initialize(actionService);
+actionService.Initialize(actionService);
 
 Console.WriteLine("Witam w systemie do obsługi zamówień.");
 Console.WriteLine();
@@ -31,16 +30,18 @@ do
     switch (operation)
     {
         case 0:
-            Console.WriteLine($"Wybór: {operation}");
+            orderService.ShowOrder();
             break;
         case 1:
-            Console.WriteLine($"Wybór: {operation}");
+            int idAdd = orderService.AddNewOrders();
             break;
         case 2:
-            Console.WriteLine($"Wybór: {operation}");
+            int idDetails = Validation.GiveMeInt("Podaj numer zamówienia: ");
+            orderService.ShowOrder(idDetails);
             break;
         case 3:
-            Console.WriteLine($"Wybór: {operation}");
+            int idChange = Validation.GiveMeInt("Podaj numer zamówienia: ");
+            orderService.OrderStatusChange(idChange);
             break;
         case 4:
             Console.WriteLine($"Wybór: {operation}");
@@ -51,6 +52,7 @@ do
             break;
         default:
             Console.Beep();
+            Console.WriteLine("Coś poszło nie tak");
             Console.ReadKey();
             break;
     }

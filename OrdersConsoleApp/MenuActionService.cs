@@ -9,34 +9,34 @@ public class MenuActionService
         menuActions = new List<MenuAction>();
     }
 
-    public static MenuActionService Initialize(MenuActionService actionService)
+    public MenuActionService Initialize(MenuActionService actionService)
     {
-        actionService.AddNewAction(0, "Lista zamówień", true, "");
-        actionService.AddNewAction(1, "Dodaj zamówienie", true, "");
-        actionService.AddNewAction(2, "Wyświetl zamówienie", true, "");
-        actionService.AddNewAction(3, "Zmień status zamówienia", true, "");
-        actionService.AddNewAction(4, "Usuń zamówienie", true, "");
-        actionService.AddNewAction(9, "Zakończ program", true, "");
+        actionService.AddNewAction(0, "Lista zamówień", "TopMenu");
+        actionService.AddNewAction(1, "Dodaj zamówienie", "TopMenu");
+        actionService.AddNewAction(2, "Wyświetl zamówienie", "TopMenu");
+        actionService.AddNewAction(3, "Zmień status zamówienia", "TopMenu");
+        actionService.AddNewAction(4, "Usuń zamówienie", "TopMenu");
+        actionService.AddNewAction(9, "Zakończ program", "TopMenu");
 
         return actionService;
     }
 
-    public void AddNewAction(int id, string name, bool menuTop, string menuName )
+    public void AddNewAction(int id, string name, string menuName)
     {
-        MenuAction menuAction = new MenuAction(id, name, menuTop, menuName);
+        MenuAction menuAction = new MenuAction(id, name, menuName);
         menuActions.Add(menuAction);
     }
 
     public List<MenuAction> GetMenuTop()
     {
-        List<MenuAction> result = new List<MenuAction>();
-        foreach (MenuAction menuAction in menuActions)
-        {
-            if (menuAction.MenuTop == true)
-            {
-                result.Add(menuAction);
-            }
-        }
-        return result;
+        //List<MenuAction> result = new List<MenuAction>();
+        //foreach (MenuAction menuAction in menuActions)
+        //{
+        //    if (menuAction.MenuName == "TopMenu")
+        //    {
+        //        result.Add(menuAction);
+        //    }
+        //}
+        return menuActions;
     }
 }

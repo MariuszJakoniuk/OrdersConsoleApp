@@ -1,15 +1,13 @@
 ﻿namespace OrdersConsoleApp;
 
-public class MenuAction
+public class TypeOrder
 {
-    public MenuAction(int id, string name, string menuName)
+    public TypeOrder(int id, string name)
     {
         Id = id;
         Name = name;
-        MenuName = menuName;
     }
 
     public int Id { get; set; }
     public string Name { get; set; }
-    public string MenuName { get; set; }
 }
