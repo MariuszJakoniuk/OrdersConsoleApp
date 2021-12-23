@@ -1,5 +1,4 @@
 ﻿namespace OrdersConsoleApp;
-
 public static class Validation
 {
     public static byte GiveMeByte(string text)
@@ -137,7 +136,7 @@ public static class Validation
 
         return textOut;
     }
-    
+
     public static string GiveMeChar(string textIn, char[] value)
     {
         string textOut = "";
@@ -170,7 +169,7 @@ public static class Validation
         return textOut.ToUpper();
     }
 
-    internal static DateTime GiveMeDate()
+    public static DateTime GiveMeDate()
     {
         int year;
         byte month;

@@ -1,17 +1,1 @@
-﻿0. lista zamówień (w liscie mozliwość również 1, 2,3,4)
-2. Szczegóły zamówienia
-3. Realizacja zamówienia
-4. Usuwanie zamówienia
-
-3.1 Zmiana statusu (Nowe, W trakcie, Zrealizowane)
-
-w Liście (0):
-1 dodawanie
-3 realizacja
-4 modyfikacja
-5 usuwanie
-
-w szczegółach (2) 
-3 realizacja
-4 modyfikacja
-5 usuwanie
+﻿

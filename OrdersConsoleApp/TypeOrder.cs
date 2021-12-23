@@ -1,7 +1,10 @@
 ﻿namespace OrdersConsoleApp;
-
 public class TypeOrder
 {
+    public TypeOrder()
+    {
+    }
+
     public TypeOrder(int id, string name)
     {
         Id = id;

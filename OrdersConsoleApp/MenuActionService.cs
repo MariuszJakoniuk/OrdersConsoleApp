@@ -1,5 +1,4 @@
 ﻿namespace OrdersConsoleApp;
-
 public class MenuActionService
 {
     private List<MenuAction> menuActions;
@@ -18,25 +17,30 @@ public class MenuActionService
         actionService.AddNewAction(4, "Usuń zamówienie", "TopMenu");
         actionService.AddNewAction(9, "Zakończ program", "TopMenu");
 
+        actionService.AddNewAction(1, "Dodaj zamówienie", "ListMenu");
+        actionService.AddNewAction(3, "Zmień status zamówienia", "ListMenu");
+        actionService.AddNewAction(4, "Usuń zamówienie", "ListMenu");
+        actionService.AddNewAction(5, "Edytuj zamówienie", "ListMenu");
+
         return actionService;
     }
 
-    public void AddNewAction(int id, string name, string menuName)
+    public void AddNewAction(byte id, string name, string menuName)
     {
         MenuAction menuAction = new MenuAction(id, name, menuName);
         menuActions.Add(menuAction);
     }
 
-    public List<MenuAction> GetMenuTop()
+    public List<MenuAction> GetMenu(string menuName)
     {
-        //List<MenuAction> result = new List<MenuAction>();
-        //foreach (MenuAction menuAction in menuActions)
-        //{
-        //    if (menuAction.MenuName == "TopMenu")
-        //    {
-        //        result.Add(menuAction);
-        //    }
-        //}
-        return menuActions;
+        List<MenuAction> result = new List<MenuAction>();
+        foreach (MenuAction menuAction in menuActions)
+        {
+            if (menuAction.MenuName == menuName)
+            {
+                result.Add(menuAction);
+            }
+        }
+        return result;
     }
 }
