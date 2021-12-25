@@ -1,4 +1,4 @@
-﻿namespace OrdersConsoleApp;
+﻿namespace Orders;
 public class StatusOrder
 {
     public StatusOrder(int id, string name)

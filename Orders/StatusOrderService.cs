@@ -1,4 +1,4 @@
-﻿namespace OrdersConsoleApp;
+﻿namespace Orders;
 public class StatusOrderService
 {
     private List<StatusOrder> statusOrders;

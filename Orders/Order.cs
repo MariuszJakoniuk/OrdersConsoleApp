@@ -1,4 +1,4 @@
-﻿namespace OrdersConsoleApp;
+﻿namespace Orders;
 public class Order
 {
     public int Id { get; set; }

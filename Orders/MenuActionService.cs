@@ -1,4 +1,4 @@
-﻿namespace OrdersConsoleApp;
+﻿namespace Orders;
 public class MenuActionService
 {
     private List<MenuAction> menuActions;

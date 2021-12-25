@@ -1,4 +1,4 @@
-﻿namespace OrdersConsoleApp;
+﻿namespace Orders;
 public class TypeOrderService
 {
     private List<TypeOrder> typeOrders;

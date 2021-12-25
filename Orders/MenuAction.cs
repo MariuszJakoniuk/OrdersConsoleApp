@@ -1,4 +1,4 @@
-﻿namespace OrdersConsoleApp;
+﻿namespace Orders;
 public class MenuAction
 {
     public MenuAction(byte id, string name, string menuName)
