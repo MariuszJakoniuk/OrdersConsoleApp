@@ -1,58 +1,39 @@
-﻿namespace Orders;
-public class OrderService
+﻿namespace Orders.App.Concrete;
+public class OrderService : BaseService<Order>
 {
-    public List<Order> Orders { get; set; }
-    private List<TypeOrder> TypeOrders { get; init; }
-    private List<StatusOrder> StatusOrders { get; set; }
+    private OrderTypeService orderType { get; init; }
+    private OrderStatusService orderStatus { get; set; }
 
     public OrderService()
     {
-        Orders = new List<Order>();
-        TypeOrders = new List<TypeOrder>();
-        StatusOrders = new List<StatusOrder>();
-        TypeRead();
-        StatusReader();
-    }
-
-    private void TypeRead()
-    {
-        TypeOrderService typeOrderService = new TypeOrderService();
-        typeOrderService.Initialize(typeOrderService);
-        TypeOrders.AddRange(typeOrderService.GetAllType());
-    }
-
-    private void StatusReader()
-    {
-        StatusOrderService statusOrderService = new StatusOrderService();
-        statusOrderService.Initialize(statusOrderService);
-        StatusOrders.AddRange(statusOrderService.GetAllStatus());
+        orderType = new OrderTypeService();
+        orderStatus = new OrderStatusService();
     }
 
     public int AddNewOrders()
     {
         Console.Clear();
         Console.WriteLine("Wybiez typ zamówienia: ");
-
-        byte[] operationAccepted = new byte[TypeOrders.Count];
-        for (int i = 0; i < TypeOrders.Count; i++)
+        byte[] operationAccepted = new byte[this.orderType.Items.Count];
+        for (int i = 0; i < orderType.Items.Count; i++)
         {
-            Console.WriteLine($"{TypeOrders[i].Id}. {TypeOrders[i].Name}");
-            operationAccepted[i] = (byte)TypeOrders[i].Id;
+            Console.WriteLine($"{orderType.Items[i].Id}. {orderType.Items[i].Name}");
+            operationAccepted[i] = (byte)orderType.Items[i].Id;
         }
         byte operation = Validation.GiveMeByte("Dokonaj wyboru: ", operationAccepted);
 
         Order order = new Order();
         order.TypeId = operation;
-        order.Id = Validation.GiveMeInt("Podaj Id zamówienia: ");
+        order.Id = GetLastId() + 1;
         order.Name = Validation.GiveMeString("Podaj nazwe zamówienia: ");
         order.OrderDate = DateTime.Now;
 
         Console.WriteLine("Status zamówienia: ");
-        operationAccepted = new byte[StatusOrders.Count];
-        for (int i = 0; i < StatusOrders.Count; i++)
+        operationAccepted = new byte[orderStatus.Items.Count];
+        for (int i = 0; i < orderStatus.Items.Count; i++)
         {
-            Console.WriteLine($"{StatusOrders[i].Id}. {StatusOrders[i].Name}");
-            operationAccepted[i] = (byte)StatusOrders[i].Id;
+            Console.WriteLine($"{orderStatus.Items[i].Id}. {orderStatus.Items[i].Name}");
+            operationAccepted[i] = (byte)orderStatus.Items[i].Id;
         }
         operation = Validation.GiveMeByte("Dokonaj wyboru: ", operationAccepted);
         order.StatusId = operation;
@@ -65,7 +46,7 @@ public class OrderService
         {
             order.Dedline = null;
         }
-        Orders.Add(order);
+        AddItem(new Order(order));
 
         return order.Id;
     }
@@ -77,7 +58,7 @@ public class OrderService
         text = ("   " + order.Id).Substring(("   " + order.Id).Length - 3, 3);
         Console.Write(text);
         Console.Write("|");
-        text = $"{TypeOrders.FirstOrDefault(x => x.Id == order.TypeId).Name}         ".Substring(0, 8);
+        text = $"{orderType.Items.FirstOrDefault(x => x.Id == order.TypeId).Name}         ".Substring(0, 8);
         Console.Write(text);
         Console.Write("|");
         text = (order.Name + "                              ").Substring(0, 29);
@@ -86,7 +67,7 @@ public class OrderService
         text = order.OrderDate.ToShortDateString();
         Console.Write(text);
         Console.Write("|");
-        text = $"{StatusOrders.FirstOrDefault(x => x.Id == order.StatusId).Name}              ".Substring(0, 12);
+        text = $"{orderStatus.Items.FirstOrDefault(x => x.Id == order.StatusId).Name}              ".Substring(0, 12);
         Console.Write(text);
         Console.Write("|");
         text = order.Dedline == null ? "          " : ((DateTime)order.Dedline).ToShortDateString();
@@ -94,71 +75,32 @@ public class OrderService
         Console.WriteLine("|");
     }
 
-    public int ShowOrder(List<MenuAction> menuActions)
+    public int ShowOrder()
     {
         int count = 0;
 
         ShowOrdersTop();
-
-        foreach (var order in Orders)
+        foreach (var order in Items)
         {
             ShowOdrerDetails(order);
             count++;
-            ShowOrderLine();
         }
         if (count == 0)
         {
             Console.WriteLine("Brak zamówień");
         }
+        ShowOrderLine();
         Console.WriteLine();
-        if (count > 0)
-        {
-            byte[] operationAccepted = new byte[menuActions.Count];
-            for (int i = 0; i < menuActions.Count; i++)
-            {
-                Console.WriteLine($"{menuActions[i].Id}. {menuActions[i].Name}");
-                operationAccepted[i] = menuActions[i].Id;
-            }
-            byte operation = Validation.GiveMeByte("Dokonaj wyboru: ", operationAccepted);
 
-            switch (operation)
-            {
-                case 1:
-                    int idAdd = AddNewOrders();
-                    break;
-                case 3:
-                    int idChange = Validation.GiveMeInt("Podaj numer zamówienia: ");
-                    int countChange = OrderStatusChange(idChange);
-                    break;
-                case 4:
-                    int idRemove = Validation.GiveMeInt("Podaj numer zamówienia: ");
-                    int countRemove = RemoveOrder(idRemove);
-                    break;
-                case 5:
-                    int idEdit = Validation.GiveMeInt("Podaj numer zamówienia: ");
-                    int countEdit = EditOrder(idEdit);
-                    break;
-                default:
-                    Console.Beep();
-                    Console.WriteLine("Coś poszło nie tak");
-                    Console.ReadKey();
-                    break;
-            }
-        }
-        else
-        {
-            Console.ReadKey();
-        }
         return count;
     }
 
     public int ShowOrder(int id)
     {
-        Order? order = Orders.FirstOrDefault(x => x.Id == id);
-
+        Order? order = Items.FirstOrDefault(x => x.Id == id);
+        ShowOrdersTop();
         if (order != null)
         {
-            ShowOrdersTop();
             ShowOdrerDetails(order);
             ShowOrderLine();
             return 1;
@@ -166,6 +108,7 @@ public class OrderService
         else
         {
             Console.WriteLine("Brak zamówień zgodnych ze specyfikacją");
+            ShowOrderLine();
             return 0;
         }
     }
@@ -193,17 +136,23 @@ public class OrderService
 
         if (toChange != 0)
         {
-            var operationAccepted = new byte[StatusOrders.Count];
-            for (int i = 0; i < StatusOrders.Count; i++)
+            var operationAccepted = new byte[orderStatus.Items.Count];
+            for (int i = 0; i < orderStatus.Items.Count; i++)
             {
-                Console.WriteLine($"{StatusOrders[i].Id}. {StatusOrders[i].Name}");
-                operationAccepted[i] = (byte)StatusOrders[i].Id;
+                Console.WriteLine($"{orderStatus.Items[i].Id}. {orderStatus.Items[i].Name}");
+                operationAccepted[i] = (byte)orderStatus.Items[i].Id;
             }
             byte statusNew = Validation.GiveMeByte("Dokonaj wyboru: ", operationAccepted);
-
-            Orders.FirstOrDefault(x => x.Id == idChange).StatusId = statusNew;
-            count++;
-            ShowOrder(idChange);
+            if (Items.FirstOrDefault(x => x.Id == idChange).StatusId != statusNew)
+            {
+                UpdateItem(Items.FirstOrDefault(x => x.Id == idChange));
+                count++;
+                ShowOrder(idChange);
+            }
+            else
+            {
+                Console.WriteLine("Nie zmieniłeś statusu.");
+            }
         }
         else
         {
@@ -224,8 +173,8 @@ public class OrderService
         if (toRemove != 0)
         {
             if (Validation.GiveMeChar("Czy usunąć zamówienie? (T)ak/(N)ie: ", new char[] { 'T', 'N' }) == "T")
-            {
-                Orders.Remove(Orders.FirstOrDefault(x => x.Id == idRemove));
+            {   
+                RemoveItem(Items.FirstOrDefault(x => x.Id == idRemove));
                 Console.WriteLine("Zamówienie usuniete.");
                 count++;
             }
@@ -252,47 +201,61 @@ public class OrderService
 
         if (toEdit != 0)
         {
+            var order = Items.FirstOrDefault(x => x.Id == idEdit);
             if (Validation.GiveMeChar("Czy zmienić typ zamówienia? (T)ak/(N)ie: ", new char[] { 'T', 'N' }) == "T")
             {
-                var operationAccepted = new byte[TypeOrders.Count];
-                for (int i = 0; i < TypeOrders.Count; i++)
+                var operationAccepted = new byte[orderType.Items.Count];
+                for (int i = 0; i < orderType.Items.Count; i++)
                 {
-                    Console.WriteLine($"{TypeOrders[i].Id}. {TypeOrders[i].Name}");
-                    operationAccepted[i] = (byte)TypeOrders[i].Id;
+                    Console.WriteLine($"{orderType.Items[i].Id}. {orderType.Items[i].Name}");
+                    operationAccepted[i] = (byte)orderType.Items[i].Id;
                 }
                 byte typeNew = Validation.GiveMeByte("Dokonaj wyboru: ", operationAccepted);
-                Orders.FirstOrDefault(x => x.Id == idEdit).TypeId = typeNew;
-                count++;
+                if (order.TypeId != typeNew)
+                {
+                    order.TypeId = typeNew;
+                    count++;
+                }
             }
             if (Validation.GiveMeChar("Czy zmienić nazwę zamówienia? (T)ak/(N)ie: ", new char[] { 'T', 'N' }) == "T")
             {
-                Orders.FirstOrDefault(x => x.Id == idEdit).Name = Validation.GiveMeString("Nowa nazwa zamówienia: ");
+                order.Name = Validation.GiveMeString("Nowa nazwa zamówienia: ");
                 count++;
             }
             if (Validation.GiveMeChar("Czy zmienić datę wpłyniecia zamówienia? (T)ak/(N)ie: ", new char[] { 'T', 'N' }) == "T")
             {
-                Orders.FirstOrDefault(x => x.Id == idEdit).OrderDate = Validation.GiveMeDate();
+                order.OrderDate = Validation.GiveMeDate();
                 count++;
             }
             if (Validation.GiveMeChar("Czy zmienić status zamówienia? (T)ak/(N)ie: ", new char[] { 'T', 'N' }) == "T")
             {
-                var operationAccepted = new byte[StatusOrders.Count];
-                for (int i = 0; i < StatusOrders.Count; i++)
+                var operationAccepted = new byte[orderStatus.Items.Count];
+                for (int i = 0; i < orderStatus.Items.Count; i++)
                 {
-                    Console.WriteLine($"{StatusOrders[i].Id}. {StatusOrders[i].Name}");
-                    operationAccepted[i] = (byte)StatusOrders[i].Id;
+                    Console.WriteLine($"{orderStatus.Items[i].Id}. {orderStatus.Items[i].Name}");
+                    operationAccepted[i] = (byte)orderStatus.Items[i].Id;
                 }
                 byte statusNew = Validation.GiveMeByte("Dokonaj wyboru: ", operationAccepted);
-
-                Orders.FirstOrDefault(x => x.Id == idEdit).StatusId = statusNew;
-                count++;
+                if (order.StatusId != statusNew)
+                {
+                    order.StatusId = statusNew;
+                    count++;
+                }
             }
             if (Validation.GiveMeChar("Czy zmienić datę realizacji zamówienia? (T)ak/(N)ie: ", new char[] { 'T', 'N' }) == "T")
             {
-                Orders.FirstOrDefault(x => x.Id == idEdit).Dedline = Validation.GiveMeDate();
+                order.Dedline = Validation.GiveMeDate();
                 count++;
             }
-            ShowOrder(idEdit);
+            if (count != 0)
+            {
+                UpdateItem(order);
+                ShowOrder(idEdit);
+            }
+            else
+            {
+                Console.WriteLine("Nie wprowadzono zmian w zamówieniu.");
+            }
         }
         else
         {
@@ -302,4 +265,6 @@ public class OrderService
         Console.ReadKey();
         return count;
     }
+
+
 }

@@ -1,4 +1,4 @@
-﻿namespace Orders;
+﻿namespace Orders.App;
 public static class Validation
 {
     public static byte GiveMeByte(string text)

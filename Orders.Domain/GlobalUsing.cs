@@ -1,0 +1,1 @@
+﻿global using Orders.Domain.Common;
