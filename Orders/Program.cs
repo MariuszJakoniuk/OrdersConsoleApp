@@ -1,19 +1,20 @@
 ﻿using Orders.App;
 using Orders.App.Concrete;
+using Orders.App.Managers;
 
 bool appExit = false;
 int countOrder = 0;
 
 MenuActionService actionService = new MenuActionService();
 OrderService orderService = new OrderService();
+OrderManager orderMenager = new OrderManager(orderService);
 
 Console.WriteLine("Witam w systemie do obsługi zamówień.");
 Console.WriteLine();
 
-
 do
 {
-    countOrder = orderService.ShowOrder();
+    countOrder = orderMenager.ShowOrder();
     Console.WriteLine("Prosze wybrać operację do wykonania:");
     var menuTop = actionService.GetMenu("TopMenu");
     byte[] operationAccepted = new byte[menuTop.Count];
@@ -35,23 +36,19 @@ do
     switch (operation)
     {
         case 1:
-            int idAdd = orderService.AddNewOrders();
+            int idAdd = orderMenager.AddNewOrders();
             break;
         case 2:
-            int idDetails = Validation.GiveMeInt("Podaj Id zamówienia: ");
-            int countDetalis = orderService.ShowOrder(idDetails);
+            int idChange = Validation.GiveMeInt("Podaj Id zamówienia: ");
+            int countChange = orderMenager.OrderStatusChange(idChange);
             break;
         case 3:
-            int idChange = Validation.GiveMeInt("Podaj Id zamówienia: ");
-            int countChange = orderService.OrderStatusChange(idChange);
+            int idEdit = Validation.GiveMeInt("Podaj numer zamówienia: ");
+            int countEdit = orderMenager.EditOrder(idEdit);
             break;
         case 4:
             int idRemove = Validation.GiveMeInt("Podaj Id zamówienia: ");
-            int countRemove = orderService.RemoveOrder(idRemove);
-            break;
-        case 5:
-            int idEdit = Validation.GiveMeInt("Podaj numer zamówienia: ");
-            int countEdit = orderService.EditOrder(idEdit);
+            int countRemove = orderMenager.RemoveOrder(idRemove);
             break;
         case 9:
             appExit = true;

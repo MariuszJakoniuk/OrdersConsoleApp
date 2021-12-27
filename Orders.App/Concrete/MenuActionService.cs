@@ -10,7 +10,7 @@ public class MenuActionService : BaseService<MenuAction>
     {
         AddItem(new MenuAction(1, "Dodaj zamówienie", true, "TopMenu"));
         AddItem(new MenuAction(2, "Zmień status zamówienia", false, "TopMenu"));
-        AddItem(new MenuAction(3, "Edytuj zamówienie", false, "ListMenu"));
+        AddItem(new MenuAction(3, "Edytuj zamówienie", false, "TopMenu"));
         AddItem(new MenuAction(4, "Usuń zamówienie", false, "TopMenu"));
         AddItem(new MenuAction(9, "Zakończ program", true, "TopMenu"));
     }

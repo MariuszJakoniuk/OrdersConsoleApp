@@ -7,6 +7,7 @@
     T GetItemById(int id);
     int GetLastId();
     int AddItem(T item);
-    int UpdateItem(T item);
+    bool UpdateItem(T item);
     void RemoveItem(T item);
+    void RemoveItemById(int id);
 }
