@@ -6,7 +6,7 @@ public class OrderService : BaseService<Order>
         var entity = GetItemById(item.Id);
         if (entity == null)
         {
-            return false; 
+            return false;
         }
         entity.TypeId = item.TypeId;
         entity.Name = item.Name;
@@ -16,16 +16,4 @@ public class OrderService : BaseService<Order>
         EditModifedItems(entity);
         return true;
     }
-    public bool UpdateItemStatus(int id, byte newStaus)
-    {
-        var entity = GetItemById(id);
-        if (entity == null)
-        {
-            return false;
-        }
-        entity.StatusId = newStaus;
-        EditModifedItems(entity);
-        return true;
-    }
-
 }

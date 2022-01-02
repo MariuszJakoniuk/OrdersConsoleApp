@@ -1,11 +1,13 @@
-﻿namespace OrdersConsole.App.Managers;
+﻿
+
+namespace OrdersConsole.App.Managers;
 public class OrderManager
 {
-    private OrderService _orderService;
+    private IService<Order> _orderService;
     private OrderTypeService orderType { get; init; }
     private OrderStatusService orderStatus { get; set; }
 
-    public OrderManager(OrderService orderService)
+    public OrderManager(IService<Order> orderService)
     {
         _orderService = orderService;
         orderType = new OrderTypeService();
@@ -145,12 +147,12 @@ public class OrderManager
                 operationAccepted[i] = (byte)orderStatus.Items[i].Id;
             }
             byte statusNew = Validation.GiveMeByte("Dokonaj wyboru: ", operationAccepted);
-            Order order = new Order( _orderService.GetItemById(idChange));
+            Order order = new Order(_orderService.GetItemById(idChange));
             if (order.StatusId != statusNew)
             {
                 order.StatusId = statusNew;
+                UpdateItemStatus(idChange, statusNew);
                 //_orderService.UpdateItem(order);
-                _orderService.UpdateItemStatus(idChange, statusNew);
                 count++;
                 ShowOrder(idChange);
             }
@@ -206,7 +208,7 @@ public class OrderManager
 
         if (toEdit != 0)
         {
-            Order order = _orderService.GetItemById(idEdit);
+            Order order = new Order ( _orderService.GetItemById(idEdit));
             if (Validation.GiveMeChar("Czy zmienić typ zamówienia? (T)ak/(N)ie: ", new char[] { 'T', 'N' }) == "T")
             {
                 byte[] operationAccepted = new byte[orderType.Items.Count];
@@ -271,4 +273,22 @@ public class OrderManager
         return count;
     }
 
+    public bool UpdateItemStatus(int id, byte newStaus)
+    {
+        var entity = _orderService.GetItemById(id);
+        if (entity == null)
+        {
+            return false;
+        }
+        entity.StatusId = newStaus;
+        _orderService.EditModifedItems(entity);
+        return true;
+    }
+
+    //Na potrzeby testów
+    public Order GetItemByIdTest(int id)
+    {
+        var item = _orderService.GetItemById(id);
+        return item;
+    }
 }

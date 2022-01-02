@@ -51,19 +51,17 @@ public class BaseService<T> : IService<T> where T : BaseEntity
         Items.Remove(GetItemById(id));
     }
     
-    //to nie działa dla Order
+    //to nie działa dla Order - CZEMU, nadpisane w OrderService
     public virtual bool UpdateItem(T item)
     {
-        
-        bool changed = false;
         var entity = GetItemById(item.Id);
-        if (entity != null)
+        if (entity == null)
         {
-            entity = item;
-            EditModifedItems(entity);
-            changed = true;
+            return false;
         }
-        return changed;
+        entity = item;
+        EditModifedItems(entity);
+        return true;
     }
 
     public void EditModifedItems(T item)
