@@ -1,8 +1,12 @@
-﻿global using OrdersConsole.App.Abstract;
+﻿global using Newtonsoft.Json;
+global using OrdersConsole.App.Abstract;
 global using OrdersConsole.App.Common;
 global using OrdersConsole.App.Concrete;
 global using OrdersConsole.Domain.Common;
 global using OrdersConsole.Domain.Entity;
 global using System;
 global using System.Collections.Generic;
+global using System.IO;
 global using System.Linq;
+global using System.Security.Cryptography;
+global using System.Text;

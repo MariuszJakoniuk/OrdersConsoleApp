@@ -94,16 +94,9 @@ public static class Validation
 
             Console.Write(textIn);
             textOut = Console.ReadLine();
-            if (textOut.Length > 0)
-            {
-                isNotError = true;
-            }
-            else
-            {
-                isNotError = false;
-            }
+            isNotError = false;
         }
-        while (!isNotError);
+        while (textOut == null || textOut.Length < 1);
 
         return textOut;
     }
@@ -123,16 +116,9 @@ public static class Validation
 
             Console.Write(textIn);
             textOut = Console.ReadLine();
-            if (textOut.Length == 1)
-            {
-                isNotError = true;
-            }
-            else
-            {
-                isNotError = false;
-            }
+            isNotError = false;
         }
-        while (!isNotError);
+        while (textOut == null || textOut.Length != 1);
 
         return textOut;
     }

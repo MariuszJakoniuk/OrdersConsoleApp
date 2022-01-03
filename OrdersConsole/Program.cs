@@ -8,14 +8,19 @@ using System.Collections.Generic;
 bool appExit = false;
 int countOrder = 0;
 
+Console.WriteLine("Witam w systemie do obsługi zamówień.");
+Console.WriteLine();
+
+LoginService loginService = new LoginService();
+LoginManager userManager = new LoginManager(loginService);
+
 MenuActionService actionService = new MenuActionService();
 OrderService orderService = new OrderService();
 OrderManager orderMenager = new OrderManager(orderService);
 
-Console.WriteLine("Witam w systemie do obsługi zamówień.");
-Console.WriteLine();
 
-do
+
+while (!appExit && StaticData.UserName.Length > 0)
 {
     countOrder = orderMenager.ShowOrder();
     Console.WriteLine("Prosze wybrać operację do wykonania:");
@@ -26,7 +31,7 @@ do
     }
     else
     {
-        menuTop = actionService.GetMenu(menuName:"TopMenu");
+        menuTop = actionService.GetMenu(menuName: "TopMenu");
     }
 
     byte[] operationAccepted = new byte[menuTop.Count];
@@ -54,6 +59,9 @@ do
             int idRemove = Validation.GiveMeInt("Podaj Id zamówienia: ");
             int countRemove = orderMenager.RemoveOrder(idRemove);
             break;
+        case 8:
+            userManager.AdminUser(actionService.GetMenu(menuName: "AdminUser"));
+            break;
         case 9:
             appExit = true;
             break;
@@ -65,4 +73,3 @@ do
     }
     Console.Clear();
 }
-while (!appExit);

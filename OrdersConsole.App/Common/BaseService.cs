@@ -13,18 +13,19 @@ public class BaseService<T> : IService<T> where T : BaseEntity
         return Items;
     }
 
-    public T GetItemById(int id)
+    public T? GetItemById(int id)
     {
-        T entity = Items.FirstOrDefault(p => p.Id == id);
+        T? entity = Items.FirstOrDefault(p => p.Id == id);
         return entity;
     }
 
     public int GetLastId()
     {
-        int lastId;
-        if (Items.Any())
+        int lastId = 0;
+        T? itemLast = Items.OrderBy(p => p.Id).LastOrDefault();
+        if (itemLast != null)
         {
-            lastId = Items.OrderBy(p => p.Id).LastOrDefault().Id;
+            lastId = itemLast.Id;
         }
         else
         {
@@ -35,7 +36,7 @@ public class BaseService<T> : IService<T> where T : BaseEntity
 
     public int AddItem(T item)
     {
-        item.CreatedById = User.Id;
+        item.CreatedById = StaticData.UserName;
         item.CreatedDateTime = DateTime.Now;
         Items.Add(item);
         return item.Id;
@@ -45,12 +46,16 @@ public class BaseService<T> : IService<T> where T : BaseEntity
     {
         Items.Remove(item);
     }
-    
+
     public void RemoveItemById(int id)
     {
-        Items.Remove(GetItemById(id));
+        T? item = GetItemById(id);
+        if (item != null)
+        {
+            Items.Remove(item);
+        }
     }
-    
+
     //to nie działa dla Order - CZEMU, nadpisane w OrderService
     public virtual bool UpdateItem(T item)
     {
@@ -66,7 +71,7 @@ public class BaseService<T> : IService<T> where T : BaseEntity
 
     public void EditModifedItems(T item)
     {
-        item.ModifiedById = User.Id;
+        item.ModifiedById = StaticData.UserName;
         item.ModifiedDateTime = DateTime.Now;
     }
 }

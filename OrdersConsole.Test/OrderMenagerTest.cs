@@ -20,7 +20,7 @@ namespace OrdersConsole.Test
             order.Name = "test";
             order.OrderDate = DateTime.Now;
             order.StatusId = 1;
-            order.CreatedById = 1;
+            order.CreatedById = "me";
             order.CreatedDateTime = DateTime.Now;
 
             var mock = new Mock<IService<Order>>();
@@ -46,7 +46,7 @@ namespace OrdersConsole.Test
             order.Name = "test";
             order.OrderDate = DateTime.Now;
             order.StatusId = 1;
-            order.CreatedById = 1;
+            order.CreatedById = "me";
             order.CreatedDateTime = DateTime.Now;
 
             bool result = true;

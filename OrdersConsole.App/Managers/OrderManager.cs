@@ -1,6 +1,4 @@
-﻿
-
-namespace OrdersConsole.App.Managers;
+﻿namespace OrdersConsole.App.Managers;
 public class OrderManager
 {
     private IService<Order> _orderService;
@@ -57,12 +55,19 @@ public class OrderManager
 
     private void ShowOdrerDetails(Order order)
     {
-        string? text;
+        string? text = "";
         Console.Write("|");
         text = ("   " + order.Id).Substring(("   " + order.Id).Length - 3, 3);
         Console.Write(text);
         Console.Write("|");
-        text = $"{orderType.Items.FirstOrDefault(x => x.Id == order.TypeId).Name}         ".Substring(0, 8);
+
+        OrderType? type = orderType.GetItemById(order.TypeId);
+        string textCheck = "";
+        if (type != null)
+        {
+            textCheck = type.Name != null ? type.Name : "";
+        }
+        text = $"{textCheck}         ".Substring(0, 8);
         Console.Write(text);
         Console.Write("|");
         text = (order.Name + "                              ").Substring(0, 29);
@@ -71,7 +76,14 @@ public class OrderManager
         text = order.OrderDate.ToShortDateString();
         Console.Write(text);
         Console.Write("|");
-        text = $"{orderStatus.Items.FirstOrDefault(x => x.Id == order.StatusId).Name}              ".Substring(0, 12);
+
+        OrderStatus? status = orderStatus.GetItemById(order.StatusId);
+        textCheck = "";
+        if (status != null)
+        {
+            textCheck = status.Name != null ? status.Name : "";
+        }
+        text = $"{textCheck}              ".Substring(0, 12);
         Console.Write(text);
         Console.Write("|");
         text = order.Dedline == null ? "          " : ((DateTime)order.Dedline).ToShortDateString();
@@ -133,6 +145,12 @@ public class OrderManager
 
     public int OrderStatusChange(int idChange)
     {
+        Order? orderChange = _orderService.GetItemById(idChange);
+        if (orderChange == null)
+        {
+            return 0;
+        }
+        Order order = new Order(orderChange);
         int toChange = ShowOrder(idChange);
         Console.WriteLine();
 
@@ -147,7 +165,7 @@ public class OrderManager
                 operationAccepted[i] = (byte)orderStatus.Items[i].Id;
             }
             byte statusNew = Validation.GiveMeByte("Dokonaj wyboru: ", operationAccepted);
-            Order order = new Order(_orderService.GetItemById(idChange));
+
             if (order.StatusId != statusNew)
             {
                 order.StatusId = statusNew;
@@ -201,6 +219,12 @@ public class OrderManager
 
     public int EditOrder(int idEdit)
     {
+        Order? orderEdit = _orderService.GetItemById(idEdit);
+        if (orderEdit == null)
+        {
+            return 0;
+        }
+        Order order = new Order(orderEdit);
         int toEdit = ShowOrder(idEdit);
         Console.WriteLine();
 
@@ -208,7 +232,6 @@ public class OrderManager
 
         if (toEdit != 0)
         {
-            Order order = new Order ( _orderService.GetItemById(idEdit));
             if (Validation.GiveMeChar("Czy zmienić typ zamówienia? (T)ak/(N)ie: ", new char[] { 'T', 'N' }) == "T")
             {
                 byte[] operationAccepted = new byte[orderType.Items.Count];
@@ -286,7 +309,7 @@ public class OrderManager
     }
 
     //Na potrzeby testów
-    public Order GetItemByIdTest(int id)
+    public Order? GetItemByIdTest(int id)
     {
         var item = _orderService.GetItemById(id);
         return item;
