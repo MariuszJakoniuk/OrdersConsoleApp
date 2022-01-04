@@ -4,7 +4,8 @@ public class LoginServiceBase<T> : IServiceLogin<T> where T : UserOrder
     public List<T> Users { get; set; }
 
     private const int KEYSIZE = 256;
-    private byte[] salt = Encoding.UTF8.GetBytes("salt");
+    //private byte[] salt = Encoding.UTF8.GetBytes("salt");
+    private byte[] key = Encoding.UTF8.GetBytes("1234567890123456");
     private byte[] iv = Encoding.UTF8.GetBytes("1234567890123456");
     string directoryData = $@"{StaticData.DataFolder}Data\";
     string file = $@"{StaticData.DataFolder}Data\Users.txt";
@@ -78,28 +79,31 @@ public class LoginServiceBase<T> : IServiceLogin<T> where T : UserOrder
         return true;
     }
 
-    public string PasswordCode(string password, string userName)
+    public string PasswordCode(string password)
     {
-        using var rij = new RijndaelManaged()
+        byte[] encrypted;
+
+        using (Aes aesAlg = Aes.Create())
         {
-            KeySize = KEYSIZE,
-            Mode = CipherMode.CBC,
-            Padding = PaddingMode.PKCS7
-        };
+            aesAlg.Key = key;
+            aesAlg.IV = iv;
 
-        using var rfc = new Rfc2898DeriveBytes(password, salt);
-        rij.Key = rfc.GetBytes(KEYSIZE / 8);
-        rij.IV = iv;
+            ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
 
-        using var ms = new MemoryStream();
-        using var cs = new CryptoStream(ms, rij.CreateEncryptor(), CryptoStreamMode.Write);
-
-        using (var bw = new BinaryWriter(cs))
-        {
-            bw.Write(Encoding.UTF8.GetBytes(userName));
+            using (MemoryStream msEncrypt = new MemoryStream())
+            {
+                using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
+                {
+                    using (StreamWriter swEncrypt = new StreamWriter(csEncrypt))
+                    {
+                        swEncrypt.Write(password);
+                    }
+                    encrypted = msEncrypt.ToArray();
+                }
+            }
         }
 
-        return Encoding.UTF8.GetString(ms.ToArray());
+         return Encoding.UTF8.GetString(encrypted);
     }
 
     public bool PaswoodCheck(string userName, string password)

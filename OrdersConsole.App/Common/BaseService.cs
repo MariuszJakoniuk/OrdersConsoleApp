@@ -6,6 +6,7 @@ public class BaseService<T> : IService<T> where T : BaseEntity
     public BaseService()
     {
         Items = new List<T>();
+        LoadItems();
     }
 
     public List<T> GetAllItems()
@@ -39,12 +40,14 @@ public class BaseService<T> : IService<T> where T : BaseEntity
         item.CreatedById = StaticData.UserName;
         item.CreatedDateTime = DateTime.Now;
         Items.Add(item);
+        SaveItems();
         return item.Id;
     }
 
     public void RemoveItem(T item)
     {
         Items.Remove(item);
+        SaveItems();
     }
 
     public void RemoveItemById(int id)
@@ -66,6 +69,7 @@ public class BaseService<T> : IService<T> where T : BaseEntity
         }
         entity = item;
         EditModifedItems(entity);
+        SaveItems();
         return true;
     }
 
@@ -73,5 +77,15 @@ public class BaseService<T> : IService<T> where T : BaseEntity
     {
         item.ModifiedById = StaticData.UserName;
         item.ModifiedDateTime = DateTime.Now;
+    }
+
+    public virtual bool LoadItems()
+    {
+        return false;
+    }
+
+    public virtual bool SaveItems()
+    {
+        return false;
     }
 }

@@ -11,4 +11,6 @@ public interface IService<T>
     void RemoveItem(T item);
     void RemoveItemById(int id);
     void EditModifedItems(T item);
+    public bool LoadItems();
+    public bool SaveItems();
 }

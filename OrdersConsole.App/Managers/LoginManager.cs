@@ -32,7 +32,7 @@ public class LoginManager
         }
         UserOrder userAdd = new UserOrder();
         userAdd.UserName = Validation.GiveMeString("Podaj nazwę uzytkownika: ");
-        userAdd.Password = _loginService.PasswordCode(Validation.GiveMeString("Podaj hasło: "), userAdd.UserName);
+        userAdd.Password = _loginService.PasswordCode(Validation.GiveMeString("Podaj hasło: "));
         _loginService.AddUser(userAdd);
         _loginService.SaveAllUser();
         if (StaticData.UserName == "")
@@ -45,7 +45,7 @@ public class LoginManager
     {
         UserOrder userLogin = new UserOrder();
         userLogin.UserName = Validation.GiveMeString("Podaj nazwę uzytkownika: ");
-        userLogin.Password = _loginService.PasswordCode(Validation.GiveMeString("Podaj hasło: "), userLogin.UserName);
+        userLogin.Password = _loginService.PasswordCode(Validation.GiveMeString("Podaj hasło: "));
         bool check = _loginService.PaswoodCheck(userLogin.UserName, userLogin.Password);
         if (check)
         {
@@ -63,7 +63,7 @@ public class LoginManager
     {
         UserOrder userLogin = new UserOrder();
         userLogin.UserName = Validation.GiveMeString("Podaj nazwę uzytkownika: ");
-        userLogin.Password = _loginService.PasswordCode(Validation.GiveMeString("Podaj nowe hasło: "), userLogin.UserName);
+        userLogin.Password = _loginService.PasswordCode(Validation.GiveMeString("Podaj nowe hasło: "));
         bool check = _loginService.UpdateUser(userLogin);
         return check;
     }

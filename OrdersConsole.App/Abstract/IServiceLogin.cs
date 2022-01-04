@@ -8,7 +8,7 @@ public interface IServiceLogin<T> where T : class
     List<T> GetAllUsers(T user);
     T? GetUserByID(string userName);
     bool PaswoodCheck(string userName, string password);
-    string PasswordCode(string password, string userName);
+    string PasswordCode(string password);
     void EditModifedItems(T user);
     bool AddUser(T user);
     bool UpdateUser(T user);

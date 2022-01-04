@@ -305,6 +305,7 @@ public class OrderManager
         }
         entity.StatusId = newStaus;
         _orderService.EditModifedItems(entity);
+        _orderService.SaveItems();
         return true;
     }
 
